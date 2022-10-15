@@ -1,0 +1,376 @@
+{
+    "create": {
+        "success": [
+            {
+                "url": "posts",
+                "postToCreate": {
+                    "userId": 1,
+                    "title": "Post test",
+                    "body": "This is a test for the POST verb."
+                },
+                "status": 201,
+                "expectedResult": {
+                    "status": 200,
+                    "userID": 1,
+                    "title": "Post test",
+                    "body": "This is a test for the POST verb."
+                }
+            }
+        ],
+        "unsucces": [
+            {
+                "url": "posts",
+                "postToCreate": {
+                    "id": 1,
+                    "userId": 1,
+                    "title": "Post test v2",
+                    "body": "This is a test for the POST verb for existing ID."
+                },
+                "status": 500,
+                "expectedResult": {
+                    "status": 200,
+                    "userId": 1,
+                    "id": 1,
+                    "title": "sunt aut facere repellat provident occaecati excepturi optio reprehenderit",
+                    "body": "quia et suscipit\nsuscipit recusandae consequuntur expedita et cum\nreprehenderit molestiae ut ut quas totam\nnostrum rerum est autem sunt rem eveniet architecto"
+                }
+            }
+        ]
+    },
+    "read": {
+        "general": [
+            {
+                "url": "posts",
+                "status": 200,
+                "length": 0
+            }
+        ],
+        "postById": [
+            {
+                "url": "posts/4",
+                "status": 200,
+                "expectedResult": {
+                    "userId": 1,
+                    "id": 4,
+                    "title": "eum et est occaecati",
+                    "body": "ullam et saepe reiciendis voluptatem adipisci\nsit amet autem assumenda provident rerum culpa\nquis hic commodi nesciunt rem tenetur doloremque ipsam iure\nquis sunt voluptatem rerum illo velit"
+                }
+            }
+        ],
+        "postByInvalidId": [
+            {
+                "url": "posts/no-id-like-this",
+                "status": 404
+            }
+        ]
+    } ,
+    "filtering": {
+        "byTitle": [
+            {
+                "url": "posts",
+                "extension": "title=qui est esse",
+                "status": 200,
+                "expectedResult": {
+                    "length": 1,
+                    "title": "qui est esse"
+                }
+            }
+        ],
+        "invalidFieldName": [
+            {
+                "url": "posts",
+                "extension": "genre=nature",
+                "status": 200,
+                "expectedResult": {
+                    "length": 100
+                }
+            }
+        ],
+        "impossibleFilter": [
+            {
+                "url": "posts",
+                "extension": "body=nothing to see here",
+                "status": 200,
+                "expectedResult": {
+                    "length": 0
+                }
+            }
+        ]
+    },
+    "paginate": {
+        "general": [
+            {
+                "url": "posts",
+                "extension": "_page=1",
+                "status": 200,
+                "expectedResult": {
+                    "length": 0
+                }
+            }
+        ],
+        "withoutLimit": [
+            {
+                "url": "posts",
+                "extension": "_page=3",
+                "status": 200,
+                "expectedResult": {
+                    "length": 10
+                }
+            }
+        ],
+        "invalidLimit": [
+            {
+                "url": "posts",
+                "extension": "_limit=limit",
+                "status": 200,
+                "expectedResult": {
+                    "length": 0
+                }
+            }
+        ],
+        "invalidPage": [
+            {
+                "url": "posts",
+                "extension": "_page=page",
+                "status": 200,
+                "expectedResult": {
+                    "id": 1,
+                    "length": 10
+                }
+            }
+        ],
+        "pageAboveLast": [
+            {
+                "url": "posts",
+                "extension": "_page=15",
+                "status": 200,
+                "expectedResult": {
+                    "length": 0
+                }
+            }
+        ]
+    },
+    "sort": {
+        "byAnyField": [
+            {
+                "url": "posts",
+                "extension": "_sort=title&_order=desc",
+                "status": 200
+            }
+        ],
+        "invalidField": [
+            {
+                "url": "posts",
+                "extension": "_sort=genre",
+                "status": 200
+            }
+        ],
+        "invalidOrder": [
+            {
+                "url": "posts",
+                "extension": "_sort=title&_order=növ",
+                "status": 200
+            }
+        ]
+    },
+    "slice": {
+        "sliceTheWhole": [
+            {
+                "url": "posts",
+                "extension": "_start=10&_end=20",
+                "status": 200,
+                "expectedResult": {
+                    "length": 10,
+                    "minId":11,
+                    "maxId": 20
+                }
+            }
+        ],
+        "invalidStart": [
+            {
+                "url": "posts",
+                "extension": "_start=-6&_limit=20",
+                "status": 200,
+                "expectedResult": {
+                    "length": 0
+                }
+            }
+        ],
+        "endAboveMax": [
+            {
+                "url": "posts",
+                "extension": "_start=50&_end=303",
+                "status": 200,
+                "expectedResult": {
+                    "length": 50,
+                    "minId":51,
+                    "maxId": 100
+                }
+            }
+        ],
+        "reversedLimits": [
+            {
+                "url": "posts",
+                "extension": "_start=30&_end=5",
+                "status": 200,
+                "expectedResult": {
+                    "length": 0
+                }
+            }
+        ]
+    },
+    "operators": {
+        "greaterThan": [
+            {
+                "url": "posts",
+                "extension": "id_gte=15",
+                "status": 200,
+                "expectedResult": {
+                    "length": 86,
+                    "minId":15,
+                    "maxId": 100
+                }
+            }
+        ],
+        "greaterThanInvalidField": [
+            {
+                "url": "posts",
+                "extension": "postId_gte=15",
+                "status": 200,
+                "expectedResult": {
+                    "length": 0
+                }
+            }
+        ],
+        "lessThan": [
+            {
+                "url": "posts",
+                "extension": "id_lte=10",
+                "status": 200,
+                "expectedResult": {
+                    "length": 10,
+                    "minId":1,
+                    "maxId": 10
+                }
+            }
+        ],
+        "lessThanInvalidField": [
+            {
+                "url": "posts",
+                "extension": "postId_lte=15",
+                "status": 200,
+                "expectedResult": {
+                    "length": 0
+                }
+            }
+        ],
+        "notEqual": [
+            {
+                "url": "posts",
+                "extension": "id_ne=1",
+                "status": 200,
+                "expectedResult": {
+                    "length": 99,
+                    "minId": 2
+                }
+            }
+        ],
+        "notEqualInvalidField": [
+            {
+                "url": "posts",
+                "extension": "postId_ne=15",
+                "status": 200,
+                "expectedResult": {
+                    "length": 0
+                }
+            }
+        ],
+        "like": [
+            {
+                "url": "posts",
+                "extension": "title_like=molestias",
+                "status": 200,
+                "expectedResult": {
+                    "length": 6,
+                    "minId": 3,
+                    "titleContains": "molestias"
+                }
+            }
+        ],
+        "likeInvalidField": [
+            {
+                "url": "posts",
+                "extension": "postTitle_like=molestias",
+                "status": 200,
+                "expectedResult": {
+                    "length": 0
+                }
+            }
+        ],
+        "fullTextSearch": [
+            {
+                "url": "posts",
+                "extension": "q=exercitationem",
+                "status": 200,
+                "expectedResult": {
+                    "length": 9,
+                    "minId": 3,
+                    "postContains": "exercitationem"
+                }
+            }
+        ],
+        "fullTextSearchImpossibleText": [
+            {
+                "url": "posts",
+                "extension": "q=invalidSearch",
+                "status": 200,
+                "expectedResult": {
+                    "length": 0
+                }
+            }
+        ]
+    },
+    "update": {
+        "existingPost": [
+            {
+                "url": "posts/1",
+                "body": {
+                    "userId": 1,
+                    "id": 1,
+                    "title": "It has been modified", 
+                    "body": "est et itaque qui laboriosam dolor ut debitis\ncumque et et dolor\neaque enim et architecto\net quia reiciendis quis"
+                },
+                "status": 200,
+                "expectedResult": {
+                    "title": "It has been modified"
+                }
+            }
+        ],
+        "notExistingPost": [
+            {
+                "url": "posts/121",
+                "body": {
+                    "userId": 13,
+                    "id": 121,
+                    "title": "no title", 
+                    "body": "nobody"
+                },
+                "status": 404
+            }
+        ]
+    },
+    "delete": {
+        "byId": [
+            {
+                "url": "posts/1",
+                "status": 200
+            }
+        ],
+        "notExistingPost": [
+            {
+                "url": "posts/200",
+                "status": 404
+            }
+        ]
+    }
+}
